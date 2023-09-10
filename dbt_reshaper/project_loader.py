@@ -59,6 +59,8 @@ def _apply_dynamic_modules_changes(yaml_config, reshaper_config, root_dir):
     if 'dynamic_modules' in reshaper_config:
         load_aliases(reshaper_config['dynamic_modules'])
         preload_dynamic_mdoules(reshaper_config['dynamic_modules'])
+    if 'headers' in reshaper_config:
+        DynamicModules.headers = reshaper_config['headers']
     extend_docs_support(reshaper_config, root_dir)
     resolve_macros_path(yaml_config, root_dir)
 

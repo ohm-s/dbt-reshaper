@@ -15,6 +15,7 @@ class ImplDynamicModules:
     docs_include_paths = []
     dynamic_modules = {}
     adapter_patches = {}
+    headers = {}
 
     def register_adapter_patch(self, adapter_name, patch):
       if adapter_name not in DynamicModules.adapter_patches:
