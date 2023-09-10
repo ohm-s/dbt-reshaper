@@ -62,4 +62,5 @@ def _apply_dynamic_modules_changes(yaml_config, reshaper_config, root_dir):
     extend_docs_support(reshaper_config, root_dir)
     resolve_macros_path(yaml_config, root_dir)
 
+
 dbt.config.project._load_yaml = _load_yaml_dynamic_modules
