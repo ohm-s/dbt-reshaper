@@ -4,6 +4,8 @@ from dbt.config.project import _load_yaml
 import os
 from .reshaper_logs import fire_info_event
 
+current_directory = os.path.dirname(__file__)
+
 def _load_yaml_dynamic_modules(path):
     yaml_config = _load_yaml(path)
     if path.endswith('dbt_project.yml'):
@@ -34,6 +36,8 @@ def _apply_dynamic_modules_changes(yaml_config, reshaper_config, root_dir):
 
     def extend_docs_support(reshaper_config, root_dir):
         if 'docs' in reshaper_config:
+            if 'preload-module' in reshaper_config['docs']:
+                DynamicModules.load_module('docs', current_directory + '/modules/docs/__init__.py')
             if 'include-paths' in reshaper_config['docs']:
                 include_paths = reshaper_config['docs']['include-paths']
                 for include_path in include_paths:
