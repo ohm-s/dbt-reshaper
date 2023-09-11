@@ -38,7 +38,7 @@ def _apply_dynamic_modules_changes(yaml_config, reshaper_config, root_dir):
         if 'index-file' in reshaper_config['docs']:
             index_file_path = os.path.join(current_directory, reshaper_config['docs']['index-file'])
             index_file_normpath = os.path.normpath(index_file_path)
-            dbt.global_project.DOCS_INDEX_FILE_PATH = index_file_normpath
+            dbt.include.global_project.DOCS_INDEX_FILE_PATH = index_file_normpath
         if 'preload-module' in reshaper_config['docs']:
             DynamicModules.load_module('docs', current_directory + '/modules/docs/__init__.py')
         if 'include-paths' in reshaper_config['docs']:
@@ -57,7 +57,7 @@ def _apply_dynamic_modules_changes(yaml_config, reshaper_config, root_dir):
                 full_dir = root_dir + '/' + macro_path
                 if full_dir not in DynamicModules.macro_paths:
                     DynamicModules.macro_paths.append(full_dir)
-                os.environ['DBT_MACROS_PATH'] = DynamicModules.macro_paths[0]
+                os.environ['DBT_MACROS_PATH'] = DynamicModules.macro_paths[0] + '/'
     ### DONE ###
     if 'dynamic_modules' in reshaper_config:
         load_aliases(reshaper_config['dynamic_modules'])
