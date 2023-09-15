@@ -11,3 +11,6 @@ if 'DBT_RESHAPE_SCHEMA_FQN_ROOT' in os.environ:
   override_schema_lookup(os.environ['DBT_RESHAPE_SCHEMA_FQN_ROOT'])
 
 RESHAPER_LOADED = True
+
+if "DBT_LAMBDA" in os.environ and os.environ["DBT_LAMBDA"]:
+  from . import lambda_support
