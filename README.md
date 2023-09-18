@@ -17,6 +17,7 @@ Here's an example configuration for dynamic modules:
 
 ```yaml
 reshaper:
+  inject_macros_in_path: true
   dynamic_modules:
     alias:
       - reshaper
@@ -27,7 +28,10 @@ reshaper:
 
 In this example, we've defined a single module alias, 'reshaper,' and specified preload paths for 'your_module' and 'your_other_module.' These modules can be easily loaded and utilized in your dbt project, effectively monkey patching dbt's behavior.
 
-You can view the built-in docs dynamic module on how you can structure your python code 
+You can view the built-in docs dynamic module on how you can structure your python code
+
+`inject_macros_in_path` will add the dbt_reshaper project macros as part of your project `macros-path`.
+This is useful if you don't want to avoid running `dbt deps` 
 
 ### Documentation Enhancements
 
