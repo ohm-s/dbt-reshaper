@@ -144,7 +144,7 @@ class DuckDB:
         ClusterIdentifier=redshift_cluster_id,
         Database=database,
         DbUser=db_user,
-        Sql=f"unload ($$ {query} $$) to '{s3location}' iam_role '{unload_role}' format parquet   CLEANPATH",
+        Sql=f"unload ($$ {query} $$) to '{s3location}/' iam_role '{unload_role}' format parquet   CLEANPATH",
     )
     return self._create_temporary_glue_from_redshift_statement(statement, name, s3location)
 
@@ -154,7 +154,7 @@ class DuckDB:
     statement = redshift_data.execute_statement(
         WorkgroupName=workgroup_name,
         Database=database,
-        Sql=f"unload ($$ {query} $$) to '{s3location}' iam_role '{unload_role}' format parquet   CLEANPATH",
+        Sql=f"unload ($$ {query} $$) to '{s3location}/' iam_role '{unload_role}' format parquet   CLEANPATH",
     )
     return self._create_temporary_glue_from_redshift_statement(statement, name, s3location)
 
