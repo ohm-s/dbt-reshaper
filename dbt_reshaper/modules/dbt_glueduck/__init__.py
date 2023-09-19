@@ -2,3 +2,5 @@ from glueduck import instance as _instance
 
 query_to_glue_table = _instance.query_to_glue_table
 drop_temp_tables = _instance.drop_temp_tables
+create_temporary_glue_table_from_redshift_serverless_query = _instance.create_temporary_glue_table_from_redshift_serverless_query
+create_temporary_glue_table_from_redshift_classic_query = _instance.create_temporary_glue_table_from_redshift_classic_query
