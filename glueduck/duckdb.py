@@ -162,10 +162,13 @@ class DuckDB:
     query_id = statement['Id']
     redshift_data = aws_helper.get_thread_safe_client('redshift-data')
     while True:
-        result_status = redshift_data.describe_statement(Id=query_id)['Status']
-        if result_status == 'FINISHED':
+        result_status = redshift_data.describe_statement(Id=query_id)
+        if result_status['Status'] == 'FINISHED':
             break
-        elif result_status == 'FAILED':
+        elif result_status['Status'] == 'FAILED':
+            # get error result
+            error = result_status['Error']
+            self.log_error(error)
             raise Exception('Query failed')
         time.sleep(3)
 
