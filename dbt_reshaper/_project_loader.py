@@ -84,6 +84,10 @@ def _apply_reshaper_configuration(yaml_config, reshaper_config, root_dir):
             duckdb_modules=yaml_config['duckdb_modules']
         )
 
+    def apply_athena_configuration(yaml_config):
+        if yaml_config['apply_patches']:
+            from . import athena_patches
+
     ### DONE ###
     resolve_macros_path(yaml_config, root_dir)
     add_reshaper_dbt_macros(yaml_config)
@@ -99,6 +103,8 @@ def _apply_reshaper_configuration(yaml_config, reshaper_config, root_dir):
         extend_docs_support(reshaper_config, root_dir)
     if 'glueduck' in reshaper_config:
         configure_glueduck(reshaper_config['glueduck'])
+    if 'athena' in reshaper_config:
+        apply_athena_configuration(reshaper_config['athena'])
 
 
 dbt.config.project._load_yaml = _load_yaml_with_reshaper
