@@ -8,7 +8,6 @@ arguments:
 ```#}
 {% macro glueduck_query_to_glue_table(duck_query) %}
     {% if execute %}
-        {{ print("glue duck executor running ")}}
         {{ modules.dynamic.inc['dbt_glueduck'].query_to_glue_table(duck_query) }}
     {% endif %}
 {% endmacro %}
