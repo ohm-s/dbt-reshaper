@@ -172,7 +172,7 @@ class DuckDB:
             raise Exception('Query failed')
         time.sleep(3)
 
-    self.execute_query(f"create view {table_name} as select * from parquet_scan('{s3location}/*')")
+    self.get_cursor_with_s3_credentials().execute(f"create view {table_name} as select * from parquet_scan('{s3location}/*')")
     columns_info = self.info_schema(table_name)
     full_table_name = self.create_temporary_glue_table_from_parquet(table_name, columns_info)
     try:
