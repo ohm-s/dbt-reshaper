@@ -9,6 +9,9 @@ from dbt.task.runnable import GraphRunnableTask
 from dbt.adapters.factory import get_adapter
 from .reshaper_logs import fire_info_event,fire_error_event
 from .dynamic_modules import DynamicModules
+from dbt.contracts.graph.parsed import ParsedModelNode
+from typing import MutableMapping
+from dbt.task.run import RunTask
 
 _original_run = GraphRunnableTask.run
 
@@ -19,6 +22,10 @@ def run_with_mermaid(self: GraphRunnableTask):
       patch(self)
 
   result = _original_run(self)
+
+  if isinstance(self, RunTask):
+    invoke_urls(result.results, self.manifest, self.config)
+
   try:
     generate_mermaid_graph(result.results, self.manifest, self.config)
   except Exception as e:
@@ -36,7 +43,7 @@ def generate_mermaid_graph(results: Sequence[RunResult], manifest: Manifest, con
 
   if manifest is not None and len(manifest.nodes) > 0:
       nodes = manifest.nodes
-      models = {k: v for k, v in nodes.items() if v.resource_type == 'model'}
+      models: MutableMapping[str, ParsedModelNode] = {k: v for k, v in nodes.items() if v.resource_type == 'model'}
 
       # get all models which are affected
       selected_models = {}
@@ -85,6 +92,32 @@ def generate_mermaid_graph(results: Sequence[RunResult], manifest: Manifest, con
       base64_obj = base64.b64encode(json.dumps(obj).encode('utf-8'))
       url = "https://mermaid.live/edit/#base64:" + base64_obj.decode('utf-8')
       fire_info_event("DRI-XX", url)
+
+
+def invoke_urls(results: Sequence[RunResult], manifest: Manifest, config: RuntimeConfig):
+  fire_info_event("DR-XX", "Figuring out if we have invokable urls defined in models")
+  affected_models = []
+  successful_models = []
+  for result in results:
+      affected_models.append(result.node.unique_id)
+      if result.status == 'success':
+        successful_models.append(result.node.unique_id)
+
+  if manifest is not None and len(manifest.nodes) > 0:
+      nodes = manifest.nodes
+      models: MutableMapping[str, ParsedModelNode] = {k: v for k, v in nodes.items() if v.resource_type == 'model'}
+
+      # get all models which are affected
+      selected_models = {}
+      for key in models:
+          model = models[key]
+          u = model.unique_id
+          if u in affected_models:
+              selected_models[u] = model
+              if 'dbt:invoke_url' in model.meta:
+                  url = model.meta['dbt:invoke_url']
+                  if model.unique_id in successful_models:
+                      fire_info_event("DR-XX", "Model " + model.unique_id + " was successful, invoking url: " + url)
 
 GraphRunnableTask.run = run_with_mermaid
 
